@@ -9,7 +9,7 @@ def main():
     dtrain = xgb.DMatrix(X_train, label=y_train)
     dtest = xgb.DMatrix(X_test, label=y_test)
     param = {'max_depth':4, 'eta':0.3, 'objective':'multi:softprob', 'num_class':4}
-    num_round = 20
+    num_round = 100
     bst = xgb.train(param, dtrain, num_round)
 
     preds = bst.predict(dtest)
@@ -18,11 +18,10 @@ def main():
     score = precision_score(y_test, best_preds, average='macro')
     print(score)
 
-
 def convert_format(line):
     d_buying = {'vhigh':0, 'high':1, 'med':2, 'low':3}
-    d_maint = {'vhigh':0, 'high':1, 'med':2, 'low':3}
-    d_doors = {'2':0, '3':1, '4':2, '5more':3}
+    d_maint = {'vhigh':1000, 'high':2000, 'med':3000, 'low':4000}
+    d_doors = {'2':0.0, '3':0.1, '4':0.2, '5more':0.3}
     d_persons = {'2':0, '4':1, 'more':2}
     d_lug_boot = {'small':0, 'med':1, "big":2}
     d_safety = {'low':0, 'med':1, "high":2}
@@ -32,7 +31,6 @@ def convert_format(line):
     x = [d_buying[d[0]], d_maint[d[1]], d_doors[d[2]],
         d_persons[d[3]], d_lug_boot[d[4]], d_safety[d[5]]]
     y = d_class[d[6][:-1]]
-
     return (x, y)
 
 
@@ -44,7 +42,13 @@ def convert_data(file_path):
             (X, y) = convert_format(line)
             data_X.append(X)
             data_y.append(y)
-    
+    print('-----------------------------------------------------')
+    print(data_X[0], data_y[0])
+    print(data_X[1], data_y[1])
+    print(data_X[2], data_y[2])
+    print(data_X[3], data_y[3])
+    print('-----------------------------------------------------')
+
     return (np.array(data_X), np.array(data_y))
 
 
